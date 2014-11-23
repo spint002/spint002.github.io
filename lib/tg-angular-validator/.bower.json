@@ -1,0 +1,48 @@
+{
+  "name": "tg-angular-validator",
+  "version": "1.0.0",
+  "authors": [
+    "Zohar Jackson <zohar@turinggroup.com>"
+  ],
+  "main": "./dist/angular-validator.js",
+  "description": "An easy to use, powerful and lightweight AngularJS validation directive.",
+  "keywords": [
+    "AngularJS",
+    "validation",
+    "angular validation",
+    "form validation",
+    "angular",
+    "validator",
+    "client-side"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "src",
+    "demo",
+    "bower.json",
+    "gruntfile.js",
+    "package.json",
+    "README.md",
+    "karma.conf.js"
+  ],
+  "dependencies": {
+    "angular": "~1.2.19",
+    "bootstrap": "~3.2.0",
+    "font-awesome": "~4.0.3"
+  },
+  "homepage": "https://github.com/turinggroup/angular-validator",
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.0",
+    "commit": "72a029ed3e6ba7480bcc6ea327cabcb0f98e600d"
+  },
+  "_source": "git://github.com/turinggroup/angular-validator.git",
+  "_target": "~1.0.0",
+  "_originalSource": "tg-angular-validator",
+  "_direct": true
+}
