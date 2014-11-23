@@ -1,4 +1,0 @@
-SimpleScoreKeeper
-=================
-
-Simple ScoreKeeper App
