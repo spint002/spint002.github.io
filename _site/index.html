@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="js/ng-cordova.js"></script>
+    <script src="cordova.js"></script>
+    <script src="js/app.js"></script>
+    <!-- <script src="js/services.js"></script> -->
+    <script src="js/controllers.js"></script>
+	
+	
+  </head>
+  <body ng-app="starter" ng-controller="AppCtrl">
+
+    <ion-pane>
+      <ion-header-bar class="bar-stable">
+		<i class="icon addPersonIcon ion-person-add" ng-click="addTeam()"> </i>
+		
+        <h1 class="title bartitle"> Simple ScoreKeeper <img src="logo.png" alt="CMS" height="35em" onclick="navigator.app.loadUrl('http://clevermonkeysoftware.com/', { openExternal:true });"></img></h1>
+		<button class="button" ng-click="popover.show($event)"><i class="icon addPersonIcon ion-help"></i></button>
+      </ion-header-bar>
+	  
+	  <!-- popup template for New team name-->
+		<script id="popup-template.html" type="text/ng-template">
+		  <input autofocus ng-model="data.newName" type="text" placeholder="type new name..." maxlength="15">
+		</script>
+	  <!-- end -->
+	  
+	  <!-- popup template for Add to Score-->
+		<script id="popup-template2.html" type="text/ng-template">
+		<input autofocus name="value" ng-model="data.numToAdd" type="number"
+			placeholder="enter points to add / subtract..."> 
+		<pre ng-show="data.numToAdd > 10000">Max is 10,000</pre>
+		</script>
+	  <!-- end -->
+	  
+	  <!-- popup for Help -->
+		<script id="popover.html" type="text/ng-template">
+		  <ion-popover-view>
+			<ion-header-bar>
+			  <h1 class="title">Tips</h1>
+			</ion-header-bar>
+			<ion-content>
+			  <h5 class="title"> - TAP to Add 1 point</h5>
+			  <h5 class="title"> - HOLD to Add Multiple Points</h5>
+				<!--<img src="help3.png" alt="Help3"> </img>-->
+			  <h5 class="title"> - SLIDE Left for more options</h5>
+				<img src="help4.png" alt="Help4"> </img>
+			<br>  <hr>  <br>
+			</ion-content>
+		  </ion-popover-view>
+		</script>
+	  <!-- end -->
+      
+	  <ion-content>
+		<ion-list>		  
+		  <ion-item ng-if="teams.length == 0">
+				Where did everyone go? :( 
+		  </ion-item> 
+		  
+		  <ion-item ng-repeat="team in teams | orderBy: predicate:reverse" item="team" 
+			ng-click="plusOne(team.id)" 
+			on-hold="addMultPoints(team.id)"
+			class="ng-class:team.myClass">	
+				<i class="icon ion-plus-round"></i>
+				<span class="itemScore">{{team.score}}</span>
+				<br>
+				<span class="teamname">{{team.name}}</span>
+				<!--<ion-option-button class="button-stable" ng-click="deleteTeam(team.id)"> Delete </ion-option-button>-->
+				<ion-option-button class="button-stable ion optionIcon ion-trash-a" ng-click="deleteTeam(team.id)"> </ion-option-button>
+				<!--<ion-option-button class="button-dark" ng-click="showRename(team.id)">Rename</ion-option-button>-->
+				<ion-option-button class="button-stable ion optionIcon ion-compose" ng-click="showRename(team.id)"> </ion-option-button>
+				<!--<ion-option-button class="button-stable" ng-click="minusOne(team.id)"> - 1 </ion-option-button>-->
+				<ion-option-button class="button-stable ion optionIcon ion-minus-round" ng-click="minusOne(team.id)"> </ion-option-button>
+				<span class="arrowhelp"> <<< </span>
+		  </ion-item>
+		  
+		</ion-list>			
+	  </ion-content>
+	  
+	  <ion-footer-bar class="bar-stable" >
+		<button class="button button-clear button-positive" ng-click="clearAll()">Clear All</button>
+		<div class="centerimg">
+			<img src="sarasvati3.png" alt="Sarasvati" height="35em" 
+				onclick="navigator.app.loadUrl('https://www.etsy.com/shop/SarasvatiJewelry', { openExternal:true });">
+			</img>
+        </div>
+		<!--<i class="icon addPersonIcon ion-person-add" ng-click="addTeam()"> </i>-->
+	    <ion-toggle ng-model="sorting.checked" toggle-class="toggle toggle-calm" ng-change="toggleSort()">
+			<p class="sortstyle">Order</p></ion-toggle>
+		<!--<button class="button button-clear button-positive" ng-click="addTeam()">Add Team</button>-->
+      </ion-footer-bar>
+    </ion-pane>
+  </body>
+</html>
