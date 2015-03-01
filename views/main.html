@@ -1,0 +1,77 @@
+<ion-view view-title="Simple ScoreKeeper">
+  <ion-content>
+    <ion-list>  
+        <ion-item ng-if="teams.length == 0">
+          Where did everyone go? :( 
+        </ion-item> 
+        
+        <ion-item 
+          ng-repeat="team in teams | orderBy: predicate:reverse" 
+          item="team" 
+          ng-click="plusOne(team.id)" 
+          on-hold="addMultPoints(team.id)"
+          class="ng-class:team.myClass">	
+          <div class="row">
+            <div class='col' align='left' style="padding-right: 60px;">
+              <span class="teamname">{{team.name}}</span>
+            </div>  
+            <div class='col' align='center'>
+              <i class="icon ion-plus-round"></i>
+              <span class="itemScore">{{team.score}}</span>
+            </div>
+            <div class='col' align='right'>
+              <span class="arrowhelp"> <<< </span>
+            </div> 
+            <ion-option-button class="button-stable ion optionIcon ion-trash-a" ng-click="deleteTeam(team.id)"> </ion-option-button>
+            <ion-option-button class="button-stable ion optionIcon ion-compose" ng-click="showRename(team.id)"> </ion-option-button>
+            <ion-option-button class="button-stable ion optionIcon ion-minus-round" ng-click="minusOne(team.id)"> </ion-option-button>
+          </div>
+        </ion-item>        
+    </ion-list>
+  </ion-content>
+    <!-- Timer section -->
+  <ion-footer-bar class="bar-subfooter" ng-show="showtimer">
+    <div class="row">
+        <div class="col" align="center" ng-show="!showtimerEdit">
+          <timer interval="1000" 
+             countdown="timerLength" 
+             finish-callback="timerFinished()"
+             class="timer"
+             autostart="false" 
+             ng-click="showtimerEdit = ! showtimerEdit;">{{mminutes}} : {{sseconds}} </timer>
+        </div>
+        <div class="item-input-inset centre" ng-show="showtimerEdit"
+            style="display: flex; padding: 0;">
+          <input min="0" max="59" type="number" 
+            onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            ng-model="editMinutes" 
+            class="timerEdit timerEditColor" ng-change="validateTimer()"/>
+          <span class="timerEdit">&nbsp; : &nbsp;</span>
+          <input min="0" max="59" type="number" 
+            onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            ng-model="editSeconds"  
+            class="timerEdit timerEditColor" ng-change="validateTimer()"/>
+        </div>
+    </div>
+    <button class="button button-dark timerbuttons button-block" ng-show="showtimerEdit"
+        ng-click="saveTimer()" >Save</button>
+    <div class="row" ng-show="!showtimerEdit">
+      <button class="button button-dark timerbuttons button-block" 
+              ng-click="timerRunning ? stopTimer() : startTimer()">{{timerRunning ? 'Pause' : 'Start'}}</button>
+      <div class="spacer" style="width: 20px; height: 1px;"></div>
+      <button class="button button-dark timerbuttons button-block"
+              ng-click="resetTimer()" >Reset</button>
+    </div>
+  </ion-footer-bar>
+  <ion-footer-bar class="bar-stable" >
+    <div class="button-bar">
+      <i class="button icon ion-ios7-undo" ng-click="undo()"><p>Undo</p></i>
+      <i class="button icon ion-ios7-time" ng-click="hideTimer()"><p>Timer</p></i>
+      <i class="button icon ion-ios7-minus-outline" ng-click="clearAll()" ><p>Clear All</p></i>
+      <i class="button icon ion-person-add" ng-click="addTeam()" ><p>Add Team</p></i>
+      <i class="button icon ion-arrow-down-c" ng-click="toggleSort()" ><p>Sort</p></i>
+      <!--<ion-toggle toggle-class=" button toggle toggle-calm" 
+        ng-model="sorting.checked" ng-change="toggleSort()" > Order </ion-toggle>-->
+    </div>
+  </ion-footer-bar>
+</ion-view>

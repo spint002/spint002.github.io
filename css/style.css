@@ -1,4 +1,23 @@
-/* Empty. Add your own CSS if you like */
+/* IndieFlower */
+@font-face {
+    font-family: IndieFlower;
+    src: url(../fonts/IndieFlower.ttf);
+}
+
+/* digital */
+@font-face {
+    font-family: Digital;
+    src: url(../fonts/Digital.ttf);
+}
+
+.indie, h3, h4, h5 {
+  font-family: 'IndieFlower', cursive;
+}
+
+.item-content {
+  padding-right: 0 !important;
+}
+
 .button-large{
     font-size: 5em;
     font-weight: 700;
@@ -7,32 +26,59 @@
 	vertical-align: middle;
 	padding-top: 0; /*0.25em;*/
 }
+
 .button-small{
-    min-height: 15px;
+  min-height: 15px;
 	text-align: center;
 }
 
-.bartitle {
-	/*font-family: Lucida Console;*/
-    font-family: 'Indie Flower', cursive;
+.title {
+	font-size: 1em;
+  font-family: 'Indie Flower', cursive;
 }
 
-.centerimg {
-    display : block;
+.center {
+  display : block;
 	margin: 0 auto; 
 }
 
 .teamname {
 	float: left;
-	font-size: 1em;
-    padding: 0px 0px 0px 0px;
-	/*font-family: courier;*/
-    font-family: 'Indie Flower', cursive;
+	font-size: .6em;
+  padding: 0px 0px 0px 0px;
+  font-family: 'IndieFlower', cursive;
+}
+
+.timer {
+	font-size: 5em;
+  font-family: 'Digital';
+}
+
+.timerEdit {
+	font-size: 4em !important;
+  font-family: 'Digital';
+  height: inherit !important;
+}
+
+.timerEditColor {
+  background-color: #E6E6E6;
+  text-align: center;
+}
+
+.timerbuttons{
+  font-size: 1.5em !important;
+}
+
+.bar-footer{
+  height: 5.5em;
+}
+
+.bar-subfooter {
+    height: 11em;
 }
 
 .arrowhelp {
-	float: right;
-	font-size: .5em;
+	font-size: .6em;
 	font-family: courier;
 }
 
@@ -43,25 +89,22 @@
 	/*font-style: bold !important;*/
 }
 
-i.addPersonIcon {
-  font-size: 2.5em;
+/*  footer buttons */
+.button.icon:before, .button.icon-left:before, .button.icon-right:before {
+  font-size: 2.5em !important;
+}
+
+.button {
+  border-width: 0px !important;
 }
 
 .optionIcon {
   font-size: 1.7em;
 }
 
-.item-complex .item-content, .item-radio .item-content {
-    background-color: inherit;
-    border: medium none;
-    padding: 15px 45px 0 15px;
-    position: relative;
-    z-index: 2;
-}
-
 div.centre
 {
-  width: 200px;
+  width: 60%;
   display: block;
   margin-left: auto;
   margin-right: auto;
