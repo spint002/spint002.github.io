@@ -37,7 +37,7 @@ angular.module('app.controllers', ['timer'])
 	// Set initial team names (either from local storage or Team1, Team2, ...)
   
   $scope.init = function() {
-    console.log("init");
+    console.log("init main");
     // team scores
     var teamsStore = localStorage.getItem(teamv);
     if (teamsStore != null && teamsStore != '' && angular.isArray(angular.fromJson(teamsStore))) {
@@ -51,8 +51,11 @@ angular.module('app.controllers', ['timer'])
     
     // get timer length from storage
     var timerStore = localStorage.getItem('timer');
-    if (timerStore)
+    if (timerStore){
       $scope.timerLength = timerStore;
+      $scope.editMinutes = Math.floor(timerStore/60);
+      $scope.editSeconds = timerStore%60;
+    }
     else
       $scope.timerLength = 60;
     
@@ -100,7 +103,7 @@ angular.module('app.controllers', ['timer'])
     }
     $scope.timerLength = $scope.editMinutes*60 + $scope.editSeconds;
     $scope.showtimerEdit = ! $scope.showtimerEdit;
-		localStorage.setItem('timer', $scope.timerLength);
+	localStorage.setItem('timer', $scope.timerLength);
     $timeout(function() {
         $scope.resetTimer();
     }, 10);
@@ -132,29 +135,16 @@ angular.module('app.controllers', ['timer'])
         $scope.reverse = false;	
     }
   };
-	
-  $scope.plusOne = function(id) {
-      var currTeam = getTeamById(id);
-      currTeam.score += 1;
-      localStorage.setItem(teamv, angular.toJson($scope.teams));
-      $scope.saveHistory(id,1);
-  };
-	
-  $scope.minusOne = function(id) {
-      var currTeam = getTeamById(id);
-      currTeam.score -= 1;
-      localStorage.setItem(teamv, angular.toJson($scope.teams));
-      $scope.saveHistory(id,-1);
-  };
 
   // set all scores to 0
   $scope.clearAll = function() {
+      //$scope.saveHistory('clearall',null,null,$scope.teams,null);
       var confirmPopup = $ionicPopup.confirm({
        title: 'Clear Scores',
        template: 'Are you sure you want to set all scores to 0? (you cannot undo this)'
       });
       confirmPopup.then(function(res) {
-       if(res) {	
+       if(res) {
           for(var i = 0; i < $scope.teams.length; i++) {
               $scope.teams[i].score = 0;
           }
@@ -236,7 +226,14 @@ angular.module('app.controllers', ['timer'])
           }			
        });
    };
-	
+		
+  $scope.plusMinusOne = function(id,qty) {
+      var currTeam = getTeamById(id);
+      currTeam.score += qty;
+      localStorage.setItem(teamv, angular.toJson($scope.teams));
+      $scope.saveHistory('score',id,currTeam.name,qty,null);
+  };
+  
   // show popup to add more points
   $scope.addMultPoints = function(id) {
       $scope.data = {};
@@ -280,9 +277,7 @@ angular.module('app.controllers', ['timer'])
 				}else if(NTA < -10000){
                   $cordovaToast.show("Sorry, the min is -10,000", 'short', 'center')
                 } else {
-                  currTeam.score += NTA;	
-                  localStorage.setItem(teamv, angular.toJson($scope.teams));
-                  $scope.saveHistory(id,NTA);
+                  $scope.plusMinusOne(id,NTA);
 				}
 			}
 		 });
@@ -293,48 +288,74 @@ angular.module('app.controllers', ['timer'])
       var	nextId = getNextId();
       $scope.teams.push({id: nextId, name: "Team"+nextId, score: 0, myClass: classes[(nextId-1)%9]});
       localStorage.setItem(teamv, angular.toJson($scope.teams));
+      $scope.saveHistory('team',nextId,"Team"+nextId,0,null);
   }
 	
   $scope.deleteTeam = function(id) {
-      var confirmPopup = $ionicPopup.confirm({
-       title: 'Remove Team',
-       template: 'Are you sure you want to remove this team?'
-      });
-      confirmPopup.then(function(res) {
-       if(res) {	
-          var index = $scope.teams.indexOf(getTeamById(id));
+      //var confirmPopup = $ionicPopup.confirm({
+      // title: 'Remove Team',
+      // template: 'Are you sure you want to remove this team?'
+      //});
+      //confirmPopup.then(function(res) {
+      // if(res) {	
+          var team = getTeamById(id);
+          var index = $scope.teams.indexOf(team);
           if (index > -1) {
               $scope.teams.splice(index, 1);
           }
           localStorage.setItem(teamv, angular.toJson($scope.teams));
-       } else {
-         //cancel or exit
-       }
-      });
+          $scope.saveHistory('team',id,team.name,team.score,team.myClass);
+       //} else {
+       //  //cancel or exit
+       //}
+      //});
   };
 
   // save history
-  $scope.saveHistory = function(id,score){    
-    $scope.history.push({id: id, score: score});
-    localStorage.setItem('history', angular.toJson($scope.history));
-    
+  $scope.saveHistory = function(type,id,name,score,myclass){    
+    $scope.history.push({type: type, id: id, name: name, score: score, myclass: myclass});
     // max length is 50 (for memory reasons)
     if ($scope.history.length > 50){
       $scope.history.shift();
-      localStorage.setItem('history', angular.toJson($scope.history));
     }
+    // save
+    localStorage.setItem('history', angular.toJson($scope.history));
   }
   
-  // undo last score change
+  // undo last change  
+  /* types: 
+      'score'     : add or subtracted points
+      'team'      : added or deleted team (score param is what score they had )
+      'clearall'  : saves all team scores */
   $scope.undo = function(){
     if ($scope.history.length > 0){
       var lastmove = $scope.history.pop();
       var currTeam = getTeamById(lastmove.id);
-      // in case the undo is for a team that no longer exists
-      if (currTeam){
-        currTeam.score -= lastmove.score;
-        localStorage.setItem(teamv, angular.toJson($scope.teams));
+      switch(lastmove.type) {
+          case 'score':
+              if (currTeam)
+                currTeam.score -= lastmove.score;
+              break;
+          case 'team':
+              if (currTeam){ //remove
+                var index = $scope.teams.indexOf(currTeam);
+                if (index > -1) {
+                    $scope.teams.splice(index, 1);
+                }
+              } else { // add
+                $scope.teams.push({id: lastmove.id, name: lastmove.name, score: lastmove.score, myClass: lastmove.myclass});
+              }
+              break;
+          //case 'clearall':
+          //    console.log(lastmove.score);
+          //    for(var i = 0; i < lastmove.score.length; i++) {                
+          //      $scope.teams[i].score = lastmove.score[i].score;
+          //    }
+          //    break;
+          default:
+              console.log("save History default..");
       }
+      localStorage.setItem(teamv, angular.toJson($scope.teams));
       localStorage.setItem('history', angular.toJson($scope.history));
     }
   }

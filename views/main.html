@@ -7,7 +7,7 @@
         
         <ion-item item="team"
           ng-repeat="team in teams | orderBy: predicate:reverse"           
-          ng-click="plusOne(team.id)" 
+          ng-click="plusMinusOne(team.id,1)" 
           on-hold="addMultPoints(team.id)"
           class="ng-class:team.myClass">	
           <div class="row">
@@ -23,12 +23,13 @@
             </div> 
             <ion-option-button class="button-stable ion optionIcon ion-trash-a" ng-click="deleteTeam(team.id)"> </ion-option-button>
             <ion-option-button class="button-stable ion optionIcon ion-compose" ng-click="showRename(team.id)"> </ion-option-button>
-            <ion-option-button class="button-stable ion optionIcon ion-minus-round" ng-click="minusOne(team.id)"> </ion-option-button>
+            <ion-option-button class="button-stable ion optionIcon ion-minus-round" ng-click="plusMinusOne(team.id,-1)"> </ion-option-button>
           </div>
         </ion-item>        
     </ion-list>
+    <!--{{history}}-->
   </ion-content>
-    <!-- Timer section -->
+  <!-- Timer section -->
   <ion-footer-bar class="bar-subfooter" ng-show="showtimer">
     <div class="row">
         <div class="col" align="center" ng-show="!showtimerEdit">
@@ -39,6 +40,7 @@
              autostart="false" 
              ng-click="showtimerEdit = ! showtimerEdit;">{{mminutes}} : {{sseconds}} </timer>
         </div>
+        <!-- EditTimer section -->
         <div class="item-input-inset centre" ng-show="showtimerEdit">
           <input min="0" max="59" type="number" 
             onkeypress='return event.charCode >= 48 && event.charCode <= 57'
