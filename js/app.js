@@ -21,8 +21,8 @@ angular.module('app', ['ionic', 'app.controllers']) //, 'ngCordova'
   .state('app', { //menu
     url: "/app",
     abstract: true,
-    templateUrl: "views/menu.html",
-    controller: 'AppCtrl'
+    templateUrl: "views/menu.html"//,
+    //controller: 'AppCtrl'
   })
 
   .state('app.main', {

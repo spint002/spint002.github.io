@@ -8,12 +8,12 @@ angular.module('app.controllers', ['timer'])
       'timer' , 'history'
   */
   
-	// current storage version
-	var teamv = "teams_v4";
-	$scope.currNewScore = "new score: ";
-	$scope.predicate = 'id';
-	$scope.reverse = false;
-	//$scope.sorting = { checked: false };
+  // current storage version
+  var teamv = "teams_v4";
+  $scope.currNewScore = "new score: ";
+  $scope.sortstyle = 0;
+  $scope.predicate = 'id';
+  $scope.reverse = false;
   $scope.timerRunning = false;
   $scope.timerLength = 60; //TODO store in localstorage
   $scope.showtimer = false; //start as false
@@ -35,6 +35,7 @@ angular.module('app.controllers', ['timer'])
                  "item-light item-icon-left itemScore"   ];		// light		(white)
 	
 	// Set initial team names (either from local storage or Team1, Team2, ...)
+  
   $scope.init = function() {
     console.log("init");
     // team scores
@@ -115,129 +116,136 @@ angular.module('app.controllers', ['timer'])
       $scope.audioTimer.play(); //boom
   };
   
+  // toggle between: no sort, descending, or ascending. 
   $scope.toggleSort = function() {
-    if($scope.reverse){	
-			$scope.predicate = 'id';
-			$scope.reverse = false;	
-		}else{
-			$scope.predicate = 'score';
-			$scope.reverse = true;		
-		}
-	};
+    if(!$scope.reverse && $scope.predicate == 'score'){	
+        $scope.sortstyle = 0; // NO sort
+        $scope.predicate = 'id';
+        $scope.reverse = false;	
+    }else if (!$scope.reverse){  
+        $scope.sortstyle = 1; // Descending
+        $scope.predicate = 'score';
+        $scope.reverse = true;	
+    }else{
+        $scope.sortstyle = 2;  // Ascending
+        $scope.predicate = 'score';
+        $scope.reverse = false;	
+    }
+  };
 	
-	$scope.plusOne = function(id) {
-		var currTeam = getTeamById(id);
-		currTeam.score += 1;
-		localStorage.setItem(teamv, angular.toJson($scope.teams));
-    $scope.saveHistory(id,1);
-	};
+  $scope.plusOne = function(id) {
+      var currTeam = getTeamById(id);
+      currTeam.score += 1;
+      localStorage.setItem(teamv, angular.toJson($scope.teams));
+      $scope.saveHistory(id,1);
+  };
 	
-	$scope.minusOne = function(id) {
-		var currTeam = getTeamById(id);
-		currTeam.score -= 1;
-		localStorage.setItem(teamv, angular.toJson($scope.teams));
-    $scope.saveHistory(id,-1);
-	};
+  $scope.minusOne = function(id) {
+      var currTeam = getTeamById(id);
+      currTeam.score -= 1;
+      localStorage.setItem(teamv, angular.toJson($scope.teams));
+      $scope.saveHistory(id,-1);
+  };
 
-	// set all scores to 0
-	$scope.clearAll = function() {
-		var confirmPopup = $ionicPopup.confirm({
-		 title: 'Clear Scores',
-		 template: 'Are you sure you want to set all scores to 0? (you cannot undo this)'
-		});
-		confirmPopup.then(function(res) {
-		 if(res) {	
-			for(var i = 0; i < $scope.teams.length; i++) {
-				$scope.teams[i].score = 0;
-			}
-			localStorage.setItem(teamv, angular.toJson($scope.teams));
-      $scope.history = []; //erase history
-      localStorage.setItem('history', angular.toJson($scope.history));
-		 } else {
-		   //cancel or exit
-		 }
-		});
-	};
-	
-	var getTeamById = function(id) {
-		var t = null;
-        if ($scope.teams != null) {
-			for(var i = 0; i < $scope.teams.length; i++) {
-				if ($scope.teams[i].id === id){
-					t = $scope.teams[i];
-				}
-			}
-        } 
-		return t;
+  // set all scores to 0
+  $scope.clearAll = function() {
+      var confirmPopup = $ionicPopup.confirm({
+       title: 'Clear Scores',
+       template: 'Are you sure you want to set all scores to 0? (you cannot undo this)'
+      });
+      confirmPopup.then(function(res) {
+       if(res) {	
+          for(var i = 0; i < $scope.teams.length; i++) {
+              $scope.teams[i].score = 0;
+          }
+          localStorage.setItem(teamv, angular.toJson($scope.teams));
+          $scope.history = []; //erase history
+          localStorage.setItem('history', angular.toJson($scope.history));
+       } else {
+         //cancel or exit
+       }
+      });
   };
 	
-	// the next id to add will be the first missing slot
-	// example: 
-	// if ids are [1,2,5,12], next id will be 3.
-	var getNextId = function() {
-		var nextId = 1;
-		var ids = [];
-		for(var i = 0; i < $scope.teams.length; i++) {
-			ids.push($scope.teams[i].id);
-		}	
-		ids = ids.sort(function(a, b){return a-b});
-		var continu = true;
-		for(var i = 0; i < ids.length && continu; i++) {
-			if(ids[i] != i+1){
-				nextId = i+1;
-				continu = false;
-			} else if(i+1 == ids.length) {
-				nextId = i+2;
-			}
-		}
-		return nextId;
+  var getTeamById = function(id) {
+      var t = null;
+      if ($scope.teams != null) {
+          for(var i = 0; i < $scope.teams.length; i++) {
+              if ($scope.teams[i].id === id){
+                  t = $scope.teams[i];
+              }
+          }
+      } 
+      return t;
   };
 	
-	// show popup for new name and save to storage
-	$scope.showRename = function(id) {
-        $scope.data = {}
-		//Keyboard.show();
-		//window.cordova.plugins.Keyboard.show();
-		$ionicPopup.show({
-           templateUrl: 'popup-template.html',
-		   title: 'Change Team Name',
-		   template: 'New Team name:',
-		   inputType: 'text',
-		   inputPlaceholder: 'Team',
-           scope: $scope,
-		   buttons: [
-                {
-                  text: '<b>Save</b>',
-                  type: 'button-positive',
-                  onTap: function(e) {
-					return $scope.data.newName || true;
-                  }
-                },
-                { text: 'Cancel', 
-                  type: 'button-assertive',
-				  onTap: function(e) { return true; } },
-              ]
-		 }).then(function(res) {
-			if (res != true){
-				var currTeam = getTeamById(id);
-				if (res.length > 15)
-					res = res.substring(0,14)+"...";
-				currTeam.name = res;	
-				localStorage.setItem(teamv, angular.toJson($scope.teams));
-                $ionicListDelegate.closeOptionButtons();
-			}			
-		 });
-	 }
+  // the next id to add will be the first missing slot
+  // example: 
+  // if ids are [1,2,5,12], next id will be 3.
+  var getNextId = function() {
+      var nextId = 1;
+      var ids = [];
+      for(var i = 0; i < $scope.teams.length; i++) {
+          ids.push($scope.teams[i].id);
+      }	
+      ids = ids.sort(function(a, b){return a-b});
+      var continu = true;
+      for(var i = 0; i < ids.length && continu; i++) {
+          if(ids[i] != i+1){
+              nextId = i+1;
+              continu = false;
+          } else if(i+1 == ids.length) {
+              nextId = i+2;
+          }
+      }
+      return nextId;
+  };
 	
-	// show popup to add more points
-	$scope.addMultPoints = function(id) {
-    $scope.data = {}
-		var currTeam = getTeamById(id);
-		//$scope.updateNewScore(0);
-		
-		//Keyboard.show();
-		//window.cordova.plugins.Keyboard.show();
-		$ionicPopup.show({
+  // show popup for new name and save to storage
+  $scope.showRename = function(id) {
+      $scope.data = {}
+      //Keyboard.show();
+      //window.cordova.plugins.Keyboard.show();
+      $ionicPopup.show({
+         templateUrl: 'popup-template.html',
+         title: 'Change Team Name',
+         template: 'New Team name:',
+         inputType: 'text',
+         inputPlaceholder: 'Team',
+         scope: $scope,
+         buttons: [
+              {
+                text: '<b>Save</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                  return $scope.data.newName || true;
+                }
+              },
+              { text: 'Cancel', 
+                type: 'button-assertive',
+                onTap: function(e) { return true; } },
+            ]
+       }).then(function(res) {
+          if (res != true){
+              var currTeam = getTeamById(id);
+              if (res.length > 15)
+                  res = res.substring(0,14)+"...";
+              currTeam.name = res;	
+              localStorage.setItem(teamv, angular.toJson($scope.teams));
+              $ionicListDelegate.closeOptionButtons();
+          }			
+       });
+   };
+	
+  // show popup to add more points
+  $scope.addMultPoints = function(id) {
+      $scope.data = {};
+      var currTeam = getTeamById(id);
+      //$scope.updateNewScore(0);
+
+      //Keyboard.show();
+      //window.cordova.plugins.Keyboard.show();
+      $ionicPopup.show({
        templateUrl: 'popup-template2.html',
 		   title: 'Add/Subtract Points to '+currTeam.name,
 		   template: 'Amount:',
@@ -268,42 +276,42 @@ angular.module('app.controllers', ['timer'])
 			}else if (res != true){
 				var NTA = parseInt(res);	//NumberToAdd	
 				if(NTA > 10000){
-            $cordovaToast.show("Sorry, the max is 10,000", 'short', 'center')
+                  $cordovaToast.show("Sorry, the max is 10,000", 'short', 'center')
 				}else if(NTA < -10000){
-            $cordovaToast.show("Sorry, the min is -10,000", 'short', 'center')
-        } else {
-					currTeam.score += NTA;	
-					localStorage.setItem(teamv, angular.toJson($scope.teams));
-          $scope.saveHistory(id,NTA);
+                  $cordovaToast.show("Sorry, the min is -10,000", 'short', 'center')
+                } else {
+                  currTeam.score += NTA;	
+                  localStorage.setItem(teamv, angular.toJson($scope.teams));
+                  $scope.saveHistory(id,NTA);
 				}
 			}
 		 });
-	 }
+	 };
 	
-	// add new team and assign color
-	$scope.addTeam = function() {
-		var	nextId = getNextId();
-		$scope.teams.push({id: nextId, name: "Team"+nextId, score: 0, myClass: classes[(nextId-1)%9]});
-		localStorage.setItem(teamv, angular.toJson($scope.teams));
-	}
+  // add new team and assign color
+  $scope.addTeam = function() {
+      var	nextId = getNextId();
+      $scope.teams.push({id: nextId, name: "Team"+nextId, score: 0, myClass: classes[(nextId-1)%9]});
+      localStorage.setItem(teamv, angular.toJson($scope.teams));
+  }
 	
-	$scope.deleteTeam = function(id) {
-		var confirmPopup = $ionicPopup.confirm({
-		 title: 'Remove Team',
-		 template: 'Are you sure you want to remove this team?'
-		});
-		confirmPopup.then(function(res) {
-		 if(res) {	
-			var index = $scope.teams.indexOf(getTeamById(id));
-			if (index > -1) {
-				$scope.teams.splice(index, 1);
-			}
-			localStorage.setItem(teamv, angular.toJson($scope.teams));
-		 } else {
-		   //cancel or exit
-		 }
-		});
-	}
+  $scope.deleteTeam = function(id) {
+      var confirmPopup = $ionicPopup.confirm({
+       title: 'Remove Team',
+       template: 'Are you sure you want to remove this team?'
+      });
+      confirmPopup.then(function(res) {
+       if(res) {	
+          var index = $scope.teams.indexOf(getTeamById(id));
+          if (index > -1) {
+              $scope.teams.splice(index, 1);
+          }
+          localStorage.setItem(teamv, angular.toJson($scope.teams));
+       } else {
+         //cancel or exit
+       }
+      });
+  };
 
   // save history
   $scope.saveHistory = function(id,score){    

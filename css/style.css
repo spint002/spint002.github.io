@@ -54,8 +54,14 @@
   font-family: 'Digital';
 }
 
+/* only firefox */
+@-moz-document  url-prefix(){
+  .timerEdit {
+    width: 50% !important;
+  }
+}
 .timerEdit {
-	font-size: 4em !important;
+  font-size: 4em !important;
   font-family: 'Digital';
   height: inherit !important;
 }
@@ -102,12 +108,12 @@
   font-size: 1.7em;
 }
 
-div.centre
-{
+div.centre {
   width: 60%;
-  display: block;
+  display: flex;  
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto; 
+  padding: 0;
 }
 
 .sortstyle{
@@ -131,7 +137,7 @@ div.centre
   left: 7px; 
  }
  
- .toggle .handle:before {
+.toggle .handle:before {
     position: absolute;
     top: -0px;
     left: -22px;
