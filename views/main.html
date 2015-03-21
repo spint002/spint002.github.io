@@ -65,13 +65,13 @@
   </ion-footer-bar>
   <ion-footer-bar class="bar-stable" >
     <div class="button-bar">
-      <i class="button icon ion-ios7-undo" ng-click="undo()"><p>Undo</p></i>
-      <i ng-class="{ button: true, icon: true, 'ion-ios7-time': showtimer,
-                   'ion-ios7-time-outline': !showtimer}" ng-click="hideTimer()"><p>Timer</p></i>
-      <i class="button icon ion-ios7-minus-outline" ng-click="clearAll()" ><p>Clear All</p></i>
+      <i class="button icon ion-ios-undo" ng-click="undo()"><p>Undo</p></i>
+      <i ng-class="{ button: true, icon: true, 'ion-ios-time': showtimer,
+                   'ion-ios-time-outline': !showtimer}" ng-click="hideTimer()"><p>Timer</p></i>
+      <i class="button icon ion-ios-minus-outline" ng-click="clearAll()" ><p>Clear All</p></i>
       <i class="button icon ion-person-add" ng-click="addTeam()" ><p>Add Team</p></i>
       <i ng-class="{ button: true, icon: true, 'ion-arrow-down-c': sortstyle == 1, 
-                   'ion-arrow-up-c': sortstyle == 2, 'ion-ios7-circle-outline': sortstyle == 0 }"
+                   'ion-arrow-up-c': sortstyle == 2, 'ion-ios-circle-outline': sortstyle == 0 }"
          ng-click="toggleSort()" ><p>Sort</p></i>
       <!--<ion-toggle toggle-class=" button toggle toggle-calm" 
         ng-model="sorting.checked" ng-change="toggleSort()" > Order </ion-toggle>-->

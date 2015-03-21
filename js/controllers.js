@@ -15,13 +15,13 @@ angular.module('app.controllers', ['timer'])
   $scope.predicate = 'id';
   $scope.reverse = false;
   $scope.timerRunning = false;
-  $scope.timerLength = 60; //TODO store in localstorage
+  $scope.timerLength = 60; 
   $scope.showtimer = false; //start as false
   $scope.showtimerEdit = false; //start as false
   $scope.editMinutes = 1;
   $scope.editSeconds = 0;
   $scope.audioTimer; 
-  $scope.history = []; //TODO store in localstorage
+  $scope.history = []; 
   
   // 9 possible colors
 	var classes = ["item-positive item-icon-left itemScore",		// positive		(blue)
@@ -60,7 +60,7 @@ angular.module('app.controllers', ['timer'])
       $scope.timerLength = 60;
     
     // audio
-    $scope.audioTimer = new Audio('/sounds/grenade.wav');
+    $scope.audioTimer = new Audio('/sounds/pager.mp3');
     
     // get history for undo fom storage
     var historyStore = localStorage.getItem('history');
@@ -109,10 +109,10 @@ angular.module('app.controllers', ['timer'])
     }, 10);
   };
   
-  $scope.validateTimer = function() {
-    //console.log($scope.editMinutes);
-    //console.log($scope.editSeconds);
-  };
+  //$scope.validateTimer = function() {
+  //  //console.log($scope.editMinutes);
+  //  //console.log($scope.editSeconds);
+  //};
   
   // called when timer reaches 0
   $scope.timerFinished = function (){    

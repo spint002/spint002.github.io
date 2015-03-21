@@ -109,7 +109,7 @@
 }
 
 div.centre {
-  width: 60%;
+  /*width: 60%;*/
   display: flex;  
   margin-left: auto;
   margin-right: auto; 
