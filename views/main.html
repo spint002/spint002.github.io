@@ -42,19 +42,18 @@
         </div>
         <!-- EditTimer section -->
         <div class="item-input-inset centre" ng-show="showtimerEdit">
-          <input min="0" max="59" type="number" 
-            onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          <input type="number" 
             ng-model="editMinutes" 
-            class="timerEdit timerEditColor" ng-change="validateTimer()"/>
+            class="timerEdit timerEditColor"/>
           <span class="timerEdit">&nbsp; : &nbsp;</span>
-          <input min="0" max="59" type="number" 
-            onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          <input type="number" 
             ng-model="editSeconds"  
-            class="timerEdit timerEditColor" ng-change="validateTimer()"/>
+            class="timerEdit timerEditColor"/>
         </div>
     </div>
     <button class="button button-dark timerbuttons button-block" ng-show="showtimerEdit"
-        ng-click="saveTimer()" >Save</button>
+        ng-click="saveTimer()"
+        ng-disabled="!validateTimer()" >{{validateTimer() ? 'Save' : 'must be between 00:01 and 59:59'}}</button>
     <div class="row" ng-show="!showtimerEdit">
       <button class="button button-dark timerbuttons button-block" 
               ng-click="timerRunning ? stopTimer() : startTimer()">{{timerRunning ? 'Pause' : 'Start'}}</button>

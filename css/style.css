@@ -50,7 +50,7 @@
 }
 
 .timer {
-	font-size: 5em;
+  font-size: 5em;
   font-family: 'Digital';
 }
 
@@ -109,7 +109,7 @@
 }
 
 div.centre {
-  /*width: 60%;*/
+  width: 200px;
   display: flex;  
   margin-left: auto;
   margin-right: auto; 
@@ -173,6 +173,7 @@ div.centre {
   cursor: pointer;
   pointer-events: none; }
 
+/* responsive text size with bottom buttons */
 @media (min-width: 700px) {
     .lowerbartext{
       font-size: 1.5em !important;

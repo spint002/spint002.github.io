@@ -1,6 +1,6 @@
-angular.module('app.controllers', ['timer'])
+angular.module('app.controllers', ['timer', 'toaster'])
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, $q, 
-                        $ionicPopup, $ionicPlatform, $ionicListDelegate, $timeout) { //todo: add $cordovaToast, 
+                        $ionicPopup, $ionicPlatform, $ionicListDelegate, $timeout, toaster) { //todo: add $cordovaToast, 
   
   /*
     Local Storage variables:
@@ -51,16 +51,17 @@ angular.module('app.controllers', ['timer'])
     
     // get timer length from storage
     var timerStore = localStorage.getItem('timer');
-    if (timerStore){
+    if (!isNaN(timerStore)){
       $scope.timerLength = timerStore;
       $scope.editMinutes = Math.floor(timerStore/60);
       $scope.editSeconds = timerStore%60;
-    }
-    else
+    } else {
       $scope.timerLength = 60;
+    }      
     
     // audio
-    $scope.audioTimer = new Audio('/sounds/pager.mp3');
+    //$scope.audioTimer = new Audio('./sounds/pager.mp3');
+    //$scope.audioTimer = new Media('./sounds/pager.mp3');
     
     // get history for undo fom storage
     var historyStore = localStorage.getItem('history');
@@ -95,11 +96,9 @@ angular.module('app.controllers', ['timer'])
   $scope.saveTimer = function() {
     if ($scope.editMinutes > 59){
       $scope.editMinutes = 59;
-      $cordovaToast.show("Sorry, the max number of minutes is 59", 'short', 'center')
     }
     if ($scope.editSeconds > 59){
       $scope.editSeconds = 59;
-      $cordovaToast.show("Sorry, the max number of seconds is 59", 'short', 'center')
     }
     $scope.timerLength = $scope.editMinutes*60 + $scope.editSeconds;
     $scope.showtimerEdit = ! $scope.showtimerEdit;
@@ -109,14 +108,18 @@ angular.module('app.controllers', ['timer'])
     }, 10);
   };
   
-  //$scope.validateTimer = function() {
-  //  //console.log($scope.editMinutes);
-  //  //console.log($scope.editSeconds);
-  //};
+  // return true if timer values are valid (0-59). otherwise returns false.
+  $scope.validateTimer = function() {
+    return !($scope.editMinutes > 59 || $scope.editSeconds > 59 || $scope.editMinutes < 0 || 
+             $scope.editSeconds < 0 || $scope.editSeconds+$scope.editMinutes == 0);
+  };
   
   // called when timer reaches 0
   $scope.timerFinished = function (){    
-      $scope.audioTimer.play(); //boom
+      //$scope.audioTimer.play(); //boom
+      MediaSrv.loadMedia('sounds/pager.mp3').then(function(media){
+        media.play(); 
+      });
   };
   
   // toggle between: no sort, descending, or ascending. 
@@ -273,9 +276,11 @@ angular.module('app.controllers', ['timer'])
 			}else if (res != true){
 				var NTA = parseInt(res);	//NumberToAdd	
 				if(NTA > 10000){
-                  $cordovaToast.show("Sorry, the max is 10,000", 'short', 'center')
+                  //$cordovaToast.show("Sorry, the max is 10,000", 'short', 'center')
+                  toaster.pop('warning', "Sorry, the max is 10,000", "");
 				}else if(NTA < -10000){
-                  $cordovaToast.show("Sorry, the min is -10,000", 'short', 'center')
+                  //$cordovaToast.show("Sorry, the min is -10,000", 'short', 'center')
+                  toaster.pop('warning', "Sorry, the min is -10,000", "");
                 } else {
                   $scope.plusMinusOne(id,NTA);
 				}
