@@ -172,3 +172,21 @@ div.centre {
   content: ' ';
   cursor: pointer;
   pointer-events: none; }
+
+@media (min-width: 700px) {
+    .lowerbartext{
+      font-size: 1.5em !important;
+    }
+}
+
+@media (min-width: 600px) {
+    .lowerbartext{
+      font-size: 1.3em !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .lowerbartext{
+      font-size: .85em !important;
+    }
+}
