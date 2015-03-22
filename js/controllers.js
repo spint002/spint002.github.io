@@ -1,6 +1,6 @@
-angular.module('app.controllers', ['timer', 'toaster'])
+angular.module('app.controllers', ['timer', 'toaster', 'ngCordova'])
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, $q, 
-                        $ionicPopup, $ionicPlatform, $ionicListDelegate, $timeout, toaster) { //todo: add $cordovaToast, 
+                        $ionicPopup, $ionicPlatform, $ionicListDelegate, $timeout, toaster, $cordovaMedia) {
   
   /*
     Local Storage variables:
@@ -24,7 +24,7 @@ angular.module('app.controllers', ['timer', 'toaster'])
   $scope.history = []; 
   
   // 9 possible colors
-	var classes = ["item-positive item-icon-left itemScore",		// positive		(blue)
+  var classes = ["item-positive item-icon-left itemScore",		// positive		(blue)
                  "item-assertive item-icon-left itemScore",		// assertive	(red)
                  "item-balanced item-icon-left itemScore",		// balanced		(green)
                  "item-energized item-icon-left itemScore",		// energized	(gold)
@@ -34,8 +34,7 @@ angular.module('app.controllers', ['timer', 'toaster'])
                  "item-calm item-icon-left itemScore",			  // calm			(aqua)
                  "item-light item-icon-left itemScore"   ];		// light		(white)
 	
-	// Set initial team names (either from local storage or Team1, Team2, ...)
-  
+  // Set initial team names (either from local storage or Team1, Team2, ...)  
   $scope.init = function() {
     console.log("init main");
     // team scores
@@ -59,10 +58,6 @@ angular.module('app.controllers', ['timer', 'toaster'])
       $scope.timerLength = 60;
     }      
     
-    // audio
-    //$scope.audioTimer = new Audio('./sounds/pager.mp3');
-    //$scope.audioTimer = new Media('./sounds/pager.mp3');
-    
     // get history for undo fom storage
     var historyStore = localStorage.getItem('history');
     if (historyStore) {
@@ -73,12 +68,21 @@ angular.module('app.controllers', ['timer', 'toaster'])
   
   $scope.init();	
  
+  $scope.ismobile = function() {
+    if (ionic.Platform.isWebView() || ionic.Platform.isIPad() || ionic.Platform.isIOS() ||
+            ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone()){
+      return true;
+    }
+    return false;      
+  };
+  
   $scope.hideTimer = function (){
     $scope.stopTimer();
     $scope.showtimer = !$scope.showtimer;
   }
   
   $scope.startTimer = function (){
+      toaster.pop('success', "Go!", "", 50);
       $scope.$broadcast('timer-start');
       $scope.timerRunning = true;
   };
@@ -115,11 +119,9 @@ angular.module('app.controllers', ['timer', 'toaster'])
   };
   
   // called when timer reaches 0
-  $scope.timerFinished = function (){    
-      //$scope.audioTimer.play(); //boom
-      MediaSrv.loadMedia('sounds/pager.mp3').then(function(media){
-        media.play(); 
-      });
+  $scope.timerFinished = function (){          
+     toaster.pop('warning', "Time\'s up!", "click to close", 8000);
+     var audio = new Audio('./sounds/pager.mp3').play();
   };
   
   // toggle between: no sort, descending, or ascending. 
@@ -328,10 +330,10 @@ angular.module('app.controllers', ['timer', 'toaster'])
   }
   
   // undo last change  
-  /* types: 
-      'score'     : add or subtracted points
-      'team'      : added or deleted team (score param is what score they had )
-      'clearall'  : saves all team scores */
+  // types: 
+  //  'score'     : add or subtracted points
+  //  'team'      : added or deleted team (score param is what score they had )
+  //  'clearall'  : saves all team scores 
   $scope.undo = function(){
     if ($scope.history.length > 0){
       var lastmove = $scope.history.pop();
