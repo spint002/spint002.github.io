@@ -67,14 +67,6 @@ angular.module('app.controllers', ['timer', 'toaster', 'ngCordova'])
   };
   
   $scope.init();	
- 
-  $scope.ismobile = function() {
-    if (ionic.Platform.isWebView() || ionic.Platform.isIPad() || ionic.Platform.isIOS() ||
-            ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone()){
-      return true;
-    }
-    return false;      
-  };
   
   $scope.hideTimer = function (){
     $scope.stopTimer();

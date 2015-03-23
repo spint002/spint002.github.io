@@ -1,7 +1,7 @@
 
 angular.module('app', ['ionic', 'app.controllers']) //, 'ngCordova'
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $cordovaSplashscreen, $rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -12,6 +12,20 @@ angular.module('app', ['ionic', 'app.controllers']) //, 'ngCordova'
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+ 
+    $rootScope.ismobile = function() {
+      if (ionic.Platform.isWebView() || ionic.Platform.isIPad() || ionic.Platform.isIOS() ||
+              ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone()){
+        return true;
+      }
+      return false;      
+    };
+    
+    setTimeout(function() {
+        if ($rootScope.ismobile()){
+          $cordovaSplashscreen.hide();
+        }        
+    }, 100);
   });
 })
 
