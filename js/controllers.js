@@ -362,6 +362,12 @@ angular.module('app.controllers', ['timer', 'toaster', 'ngCordova'])
 })
 
 .controller('AboutCtrl', function($scope) {
+  if($rootScope.ismobile() && !$rootScope.appversion){
+    cordova.getAppVersion(function(version) {
+       $rootScope.appversion = version;
+     });
+  }
+  
   $scope.html = "<a href='http://clevermonkeysoftware.com'>CleverMonkeySoftware.com</a>";
 });
 
