@@ -361,7 +361,7 @@ angular.module('app.controllers', ['timer', 'toaster', 'ngCordova'])
   
 })
 
-.controller('AboutCtrl', function($scope) {
+.controller('AboutCtrl', function($scope, $rootScope) {
   if($rootScope.ismobile() && !$rootScope.appversion){
     cordova.getAppVersion(function(version) {
        $rootScope.appversion = version;
