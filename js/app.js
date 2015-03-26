@@ -21,17 +21,11 @@ angular.module('app', ['ionic', 'app.controllers']) //, 'ngCordova'
       return false;      
     };
     
-    if($rootScope.ismobile()){
-      cordova.getAppVersion(function(version) {
-         $rootScope.appversion = version;
-       });
-    }
-    
     setTimeout(function() {
         if ($rootScope.ismobile()){
           $cordovaSplashscreen.hide();
         }        
-    }, 100);
+    }, 1000);
   });
 })
 
